@@ -3,62 +3,61 @@
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![Maven](https://img.shields.io/badge/apache_maven-%23C71A36.svg?style=for-the-badge&logo=apachemaven&logoColor=white)
-![License](https://img.shields.io/badge/license-GPLv3-blue.svg?style=for-the-badge)
+![H2](https://img.shields.io/badge/database-H2-blue.svg?style=for-the-badge)
 
-O **Luxo em Passos** é um sistema de gestão para sapatarias de alto padrão, focado no controle de estoque de sandálias de luxo, gestão de clientes e processamento de pedidos com suporte a programas de fidelidade dinâmicos.
-
----
-
-## 🚀 Funcionalidades
-
-- **Gestão de Clientes:** Cadastro completo com endereços e histórico de compras.
-- **Sistema de Fidelidade:** Classificação automática em níveis (**Standard, Gold e Black**) com base no volume de gastos acumulados.
-- **Processamento de Pedidos:** Validação de estoque, cálculo de subtotais e atualização automática do perfil do cliente.
-- **Interface Dupla:** Operação via **Console (Menu Interativo)** e via **API REST**.
-- **Tratamento de Erros:** Exceções personalizadas para estoque insuficiente e regras de negócio.
+O **Luxo em Passos** é um sistema de gestão robusto para sapatarias de alto padrão. Ele automatiza o ciclo de venda de calçados de luxo, integrando o controle de estoque em tempo real com um motor de fidelidade dinâmico.
 
 ---
 
-## 🧠 Regras de Negócio (Fidelidade)
+## 🚀 Diferenciais do Projeto
 
-O sistema utiliza o padrão de estratégia para definir o perfil do cliente conforme o valor total gasto:
-* **Standard:** Perfil inicial.
-* **Gold:** Gastos acumulados acima de **R$ 5.000,00**.
-* **Black:** Gastos acumulados acima de **R$ 10.000,00**.
+- **Arquitetura em Camadas:** Separação clara entre Interfaces, Implementações (Services), Repositórios e Controladores.
+- **Motor de Fidelidade Reativo:** O perfil do cliente evolui (Upgrade) ou regride (Downgrade) automaticamente conforme as movimentações financeiras são confirmadas ou canceladas.
+- **Persistência Relacional:** Utiliza **Spring Data JPA** com banco de dados **H2** para garantir a integridade referencial entre Pedidos, Itens e Clientes.
+- **Segurança de Negócio:** Validação rigorosa de estoque e tratamento de exceções customizadas para evitar inconsistências financeiras.
+
+---
+
+## 🧠 Regras de Negócio (Fidelidade & Descontos)
+
+O sistema implementa o padrão **Strategy** com **Sealed Interfaces** e **Records** para gerenciar os descontos:
+
+| Perfil | Gatilho (Gasto Acumulado) | Desconto Real |
+| :--- | :--- | :--- |
+| **Standard** | R$ 0,00 | 0% |
+| **Gold** | > R$ 1.500,00 | **5% OFF** |
+| **Black** | > R$ 3.000,00 | **10% OFF** |
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Linguagem:** Java 17+
-- **Framework:** Spring Boot 3.x
-- **Gerenciador de Dependências:** Maven
-- **Persistência:** Repositórios em memória (Simulando Banco de Dados com `List` e `Map`).
-- **Documentação de API:** Postman Collection inclusa.
+- **Core:** Java 17 / Spring Boot 3.x
+- **ORM:** Spring Data JPA
+- **Database:** H2 (In-Memory / Database Console)
+- **Design Patterns:** Strategy, Records (Java 17), Inversion of Control.
 
 ---
 
 ## 📂 Estrutura do Projeto
 
-O projeto está organizado em camadas para garantir alta coesão e baixo acoplamento:
+O projeto segue as melhores práticas de organização de pacotes:
 
-* `controller/`: Endpoints REST para Clientes e Pedidos.
-* `service/`: Lógica de processamento de vendas e regras de fidelidade.
-* `repository/`: Gerenciamento de dados (In-memory).
-* `model/`: Entidades de domínio (Sandália, Cliente, Pedido, ItemPedido).
-* `exception/`: Lógicas de erro como `EstoqueInsuficienteException`.
-* `config/`: Carga de dados iniciais para testes rápidos.
-* `util/`: Utilitários como `MoedaUtil`.
+* `model/`: Entidades JPA e Records de Perfil (Standard, Gold, Black).
+* `service/`: Interfaces e implementações (`ServiceImpl`) contendo a inteligência do negócio.
+* `repository/`: Interfaces JPA para comunicação com o banco de dados.
+* `controller/`: Camada de exposição REST (Endpoints).
+* `exception/`: Gerenciamento de erros (ex: `EstoqueInsuficienteException`).
+* `MenuConsole.java`: Interface CLI interativa para operação direta do sistema.
 
 ---
 
-## 🔌 Endpoints Disponíveis (API)
+## 🔄 Ciclo de Vida do Pedido
 
-| Método | Endpoint | Descrição |
-| :--- | :--- | :--- |
-| **GET** | `/clientes` | Lista todos os clientes e seus perfis. |
-| **GET** | `/pedidos` | Lista o histórico de pedidos realizados. |
-| **POST** | `/pedidos` | Cria um novo pedido e atualiza o estoque/fidelidade. |
+O sistema garante que o faturamento só seja contabilizado após a confirmação:
+1.  **Gerado:** Reserva o estoque e aplica o desconto do perfil atual.
+2.  **Finalizado:** Registra o faturamento e atualiza o gasto acumulado do cliente (possível Upgrade).
+3.  **Cancelado:** Realiza o estorno financeiro, devolve itens ao estoque e recalcula o perfil do cliente (possível Downgrade).
 
 ---
 

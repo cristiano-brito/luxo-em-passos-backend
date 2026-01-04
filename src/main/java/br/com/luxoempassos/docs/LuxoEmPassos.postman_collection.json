@@ -1,0 +1,74 @@
+{
+  "info": {
+    "name": "Luxo em Passos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Vendas",
+      "item": [
+        {
+          "name": "Listar Pedidos por Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos?status=ABERTO",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos"],
+              "query": [{ "key": "status", "value": "ABERTO" }]
+            }
+          }
+        },
+        {
+          "name": "Faturamento Total",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/faturamento",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "faturamento"]
+            }
+          }
+        },
+        {
+          "name": "Finalizar Pedido",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/PROTOCOLO_AQUI/finalizar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "PROTOCOLO_AQUI", "finalizar"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar Clientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/clientes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "clientes"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

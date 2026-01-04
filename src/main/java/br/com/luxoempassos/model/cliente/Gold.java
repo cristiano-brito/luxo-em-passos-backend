@@ -12,4 +12,7 @@ public record Gold() implements PerfilFidelidade {
     public Boolean possuiDireitoAFreteGratis() {
         return true; // Benefício intermediário
     }
+
+    @Override
+    public String descricao() { return "GOLD (5% OFF)"; }
 }

@@ -1,5 +1,8 @@
 package br.com.luxoempassos.model.cliente;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public record Endereco(
     String logradouro,
     String numero,

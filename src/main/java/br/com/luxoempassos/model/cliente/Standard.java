@@ -12,4 +12,7 @@ public record Standard() implements PerfilFidelidade {
     public Boolean possuiDireitoAFreteGratis() {
         return false; // Clientes padrão pagam frete
     }
+
+    @Override
+    public String descricao() { return "STANDARD"; }
 }

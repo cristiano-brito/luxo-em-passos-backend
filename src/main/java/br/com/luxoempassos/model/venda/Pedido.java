@@ -3,23 +3,46 @@ package br.com.luxoempassos.model.venda;
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.exception.NegocioException;
 import br.com.luxoempassos.model.produto.Sandalia;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "pedidos")
 public class Pedido {
-    private final String protocolo;
-    private final Cliente cliente;
-    private final List<ItemPedido> itens = new ArrayList<>();
-    private BigDecimal valorTotal = BigDecimal.ZERO;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String protocolo;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Relacionamento com Cliente (Dono do pedido)
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
+    @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.ABERTO;
 
+    private LocalDateTime dataHora;
+    private BigDecimal valorTotal = BigDecimal.ZERO;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPedido> itens = new ArrayList<>();
+
+    protected Pedido() {}
+
     public Pedido(Cliente cliente) {
-        this.protocolo = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         this.cliente = cliente;
+        this.protocolo = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        this.status = StatusPedido.ABERTO;
+        this.dataHora = LocalDateTime.now();
+        this.valorTotal = BigDecimal.ZERO;
     }
 
     public void adicionarItem(Sandalia sandalia, int quantidade) {
@@ -27,8 +50,11 @@ public class Pedido {
         sandalia.baixarEstoque(quantidade);
 
         ItemPedido novoItem = new ItemPedido(sandalia, quantidade, sandalia.getPrecoVenda());
-        this.itens.add(novoItem);
 
+        // VÍNCULO BI-DIRECIONAL: Crucial para o JPA persistir a relação
+        novoItem.setPedido(this);
+
+        this.itens.add(novoItem);
         recalcularTotal();
     }
 
@@ -68,12 +94,8 @@ public class Pedido {
         }
 
         this.itens.forEach(item -> {
-            item.sandalia().abastecerEstoque(item.quantidade());
+            item.getSandalia().abastecerEstoque(item.getQuantidade());
         });
-
-        if (this.status == StatusPedido.FINALIZADO) {
-            this.cliente.estornarGasto(this.getValorTotal());
-        }
 
         this.status = StatusPedido.CANCELADO;
         System.out.println("Pedido " + protocolo + " cancelado e estoque devolvido.");
@@ -83,6 +105,7 @@ public class Pedido {
     public StatusPedido getStatus() {
         return status;
     }
+    public LocalDateTime getDataHora() { return dataHora; }
     public BigDecimal getValorTotal() { return valorTotal; }
     public Cliente getCliente() { return cliente; }
     public List<ItemPedido> getItens() { return Collections.unmodifiableList(itens); }

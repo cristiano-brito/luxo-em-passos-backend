@@ -1,21 +1,30 @@
 package br.com.luxoempassos.model.produto;
 
 import br.com.luxoempassos.exception.EstoqueInsuficienteException;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+@Entity
+@Table(name = "produtos")
 public class Sandalia {
-    private final String sku; // Identificador único de estoque (ex: SND-001)
-    private final String modelo;
-    private final int tamanho;
-    private final Categoria categoria;
+
+    @Id
+    private String sku; // Identificador único de estoque (ex: SND-001)
+
+    private String modelo;
+    private int tamanho;
+
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
+
     private BigDecimal precoCusto; // Valor pago à fábrica
     private BigDecimal precoVenda; // Valor com markup de 75%
     private int estoque;
 
-    private static final BigDecimal MARKUP = new BigDecimal("1.75");
+    protected Sandalia() {}
 
     public Sandalia(String sku, String modelo, int tamanho, Categoria categoria, BigDecimal precoCustoInicial, int estoque) {
         this.sku = Objects.requireNonNull(sku, "SKU é obrigatório");
@@ -51,6 +60,7 @@ public class Sandalia {
 
     public String getSku() { return sku; }
     public String getModelo() { return modelo; }
+    public int getTamanho() { return tamanho; }
     public BigDecimal getPrecoVenda() { return precoVenda; }
     public Categoria getCategoria() { return categoria; }
     public BigDecimal getPrecoCusto() { return precoCusto; }

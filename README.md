@@ -14,6 +14,7 @@ O **Luxo em Passos** é um sistema de gestão SaaS robusto para boutiques de cal
 - **Arquitetura Multi-tenancy (SaaS):** Isolamento rigoroso de dados entre lojas utilizando **Hibernate Filters** e **AOP** (Programação Orientada a Aspectos). Cada requisição é blindada por um identificador de inquilino.
 - **Motor de Fidelidade Dinâmico:** O perfil do cliente (`Standard`, `Gold`, `Black`) evolui automaticamente com base no faturamento acumulado e estornos.
 - **Envelope Pattern:** Padronização global de respostas via `ApiResponse<T>`, facilitando o consumo pelo Frontend e garantindo metadados de performance em cada chamada.
+- **Serialização Inteligente:** Configuração de Jackson para omitir campos nulos, garantindo payloads leves e otimizados para o consumo mobile/web.
 - **Segurança Proativa:** Mitigação de vulnerabilidades (CVEs) através da stack **Spring Boot 3.3.2**.
 
 ---
@@ -46,6 +47,7 @@ Para interagir com a API, é **obrigatório** o envio do identificador da loja n
 - **Spring Data JPA & Hibernate Filters** (Isolamento de dados)
 - **Spring AOP** (Ativação automática de filtros de segurança)
 - **Jakarta Bean Validation** (Integridade de dados)
+- **Jackson Customization** (Otimização de JSON `non_null`)
 - **H2 Database** (Persistência em memória para desenvolvimento)
 - **Design Patterns:** Strategy, ThreadLocal Context, Interceptor, Envelope Pattern.
 
@@ -65,8 +67,13 @@ Para interagir com a API, é **obrigatório** o envio do identificador da loja n
 
 ---
 
-## 🔧 Como Executar
+## 🔧 Configuração e Execução
 
+### Pré-requisitos
+* Java 17+
+* Maven 3.8+
+
+### Passos
 1. **Clonagem:**
    ```bash
    git clone [https://github.com/cristiano-brito/luxo-em-passos-backend.git](https://github.com/cristiano-brito/luxo-em-passos-backend.git)

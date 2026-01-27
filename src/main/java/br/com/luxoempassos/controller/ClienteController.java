@@ -1,7 +1,10 @@
 package br.com.luxoempassos.controller;
 
+import br.com.luxoempassos.dto.ApiResponse;
+import br.com.luxoempassos.exception.NegocioException;
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.service.IClienteService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +21,28 @@ public class ClienteController {
     }
 
     @GetMapping
-    public List<Cliente> listarTodos() {
-        return clienteService.listarTodos();
+    public ResponseEntity<ApiResponse<List<Cliente>>> listarTodos() {
+        long inicio = System.currentTimeMillis();
+
+        List<Cliente> clientes = clienteService.listarTodos();
+
+        ApiResponse<List<Cliente>> resposta = ApiResponse.ok(
+                clientes,
+                "Lista de clientes recuperada com sucesso!",
+                inicio
+        );
+
+        return ResponseEntity.ok(resposta);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Retorna o código 201 (Criado) que é o padrão REST
-    public Cliente cadastrar(@RequestBody Cliente cliente) {
-        return clienteService.salvar(cliente);
+    public ResponseEntity<ApiResponse<Cliente>> cadastrar(@Valid @RequestBody Cliente cliente) {
+        long inicio = System.currentTimeMillis();
+
+        Cliente salvo = clienteService.salvar(cliente);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok(salvo, "Cliente cadastrado com sucesso!", inicio));
     }
 
     @GetMapping("/{id}")

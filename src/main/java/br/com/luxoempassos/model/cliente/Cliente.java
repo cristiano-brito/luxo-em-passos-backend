@@ -1,6 +1,8 @@
 package br.com.luxoempassos.model.cliente;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,13 +18,18 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "O nome é obrigatório para clientes de luxo")
     private String nome;
 
     @Embedded
     private Endereco endereco;
 
     private String telefone;
+
+    @Email(message = "O e-mail informado é inválido")
     private String email;
+
+    @Column(updatable = false)
     private LocalDate dataCadastro;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -90,4 +97,9 @@ public class Cliente {
     public String getTelefone() { return telefone; }
     public LocalDate getDataCadastro() { return dataCadastro; }
     public List<Gasto> getHistoricoGastos() { return Collections.unmodifiableList(historicoGastos); }
+
+    @PrePersist
+    protected void onCreate() {
+        this.dataCadastro = LocalDate.now();
+    }
 }

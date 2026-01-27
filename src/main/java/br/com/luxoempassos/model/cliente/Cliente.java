@@ -3,6 +3,9 @@ package br.com.luxoempassos.model.cliente;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,11 +15,19 @@ import java.util.List;
 
 @Entity
 @Table(name = "clientes")
+// Define o filtro "tenantFilter" que aceita um parâmetro "tenantId" do tipo String
+@FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = String.class))
+// Aplica o filtro: toda query SQL gerada terá "WHERE tenant_id = :tenantId"
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Novo campo para o Multi-tenancy
+    @Column(name = "tenant_id", nullable = false, updatable = false)
+    private String tenantId;
 
     @NotBlank(message = "O nome é obrigatório para clientes de luxo")
     private String nome;
@@ -90,6 +101,12 @@ public class Cliente {
         historicoGastos.removeIf(g -> g.valor().equals(valor) && g.data().equals(LocalDate.now()));
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.dataCadastro = LocalDate.now();
+        this.tenantId = br.com.luxoempassos.config.TenantContext.getTenantId();
+    }
+
     public Long getId() { return id; }
     public String getNome() { return nome; }
     public Endereco getEndereco() { return endereco; }
@@ -97,9 +114,5 @@ public class Cliente {
     public String getTelefone() { return telefone; }
     public LocalDate getDataCadastro() { return dataCadastro; }
     public List<Gasto> getHistoricoGastos() { return Collections.unmodifiableList(historicoGastos); }
-
-    @PrePersist
-    protected void onCreate() {
-        this.dataCadastro = LocalDate.now();
-    }
+    public String getTenantId() { return tenantId; }
 }

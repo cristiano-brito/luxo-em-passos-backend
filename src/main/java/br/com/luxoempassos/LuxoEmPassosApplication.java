@@ -34,7 +34,7 @@ public class LuxoEmPassosApplication {
                 if (clienteService.listarTodos().isEmpty()) {
                     System.out.println("🌱 Populando banco de dados inicial...");
 
-                    Endereco end = Endereco.criar("Av. Brasil", "10", "Centro", "Rio de Janeiro", "20000-000");
+                    Endereco end = Endereco.criar("Av. Brasil", "10", "Centro", "Rio de Janeiro", "20000-000", "BA");
                     clienteService.salvar(Cliente.novo("Sophia Loren", end, "21999998888", "sophia@luxo.com", LocalDate.now()));
 
                     produtoService.salvar(new Sandalia("SND-01", "Scarpin Luxo", 37, Categoria.SCARPIN, new BigDecimal("500.00"), 10));

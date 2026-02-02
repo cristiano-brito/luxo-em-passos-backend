@@ -143,7 +143,7 @@ public class MenuConsole {
         System.out.print("Nome: "); String nome = scanner.nextLine();
         System.out.print("Email: "); String email = scanner.nextLine();
 
-        Endereco endereco = Endereco.criar("Rua das Palmeiras", "100", "Centro", "São Paulo", "01000-000");
+        Endereco endereco = Endereco.criar("Rua das Palmeiras", "100", "Centro", "São Paulo", "01000-000", "BA");
         Cliente novo = Cliente.novo(nome, endereco, "(11) 99999-9999", email, LocalDate.now());
 
         clienteService.salvar(novo);

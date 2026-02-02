@@ -12,10 +12,11 @@ O **Luxo em Passos** é um sistema de gestão SaaS robusto para boutiques de cal
 ## 🚀 Diferenciais do Projeto
 
 - **Arquitetura Multi-tenancy (SaaS):** Isolamento rigoroso de dados entre lojas utilizando **Hibernate Filters** e **AOP** (Programação Orientada a Aspectos). Cada requisição é blindada por um identificador de inquilino.
-- **Motor de Fidelidade Dinâmico:** O perfil do cliente (`Standard`, `Gold`, `Black`) evolui automaticamente com base no faturamento acumulado e estornos.
-- **Envelope Pattern:** Padronização global de respostas via `ApiResponse<T>`, facilitando o consumo pelo Frontend e garantindo metadados de performance em cada chamada.
+- **Alta Performance & Desacoplamento:** Uso extensivo de **Java Records (DTOs)** para reduzir o payload das respostas e evitar o problema de N+1 queries, garantindo tempos de resposta sub-50ms.
+- **Motor de Fidelidade Dinâmico:** O perfil do cliente (`Standard`, `Gold`, `Black`) evolui automaticamente com base no faturamento acumulado, calculado em tempo real pelo backend.
+- **Envelope Pattern:** Padronização global de respostas via `ApiResponse<T>`, facilitando o consumo pelo Frontend e garantindo metadados de auditoria e performance.
 - **Serialização Inteligente:** Configuração de Jackson para omitir campos nulos, garantindo payloads leves e otimizados para o consumo mobile/web.
-- **Segurança Proativa:** Mitigação de vulnerabilidades (CVEs) através da stack **Spring Boot 3.3.2**.
+- **Segurança Proativa:** Mitigação de vulnerabilidades (CVEs) através da stack **Spring Boot 3.3.2** e ocultação de IDs de infraestrutura (como `tenant_id`) nas camadas externas.
 
 ---
 
@@ -28,6 +29,23 @@ Para interagir com a API, é **obrigatório** o envio do identificador da loja n
 | `X-Tenant-ID` | Identificador único da boutique | `boutique-salvador` |
 
 > **Nota:** Requisições sem este header retornarão erro `422 Unprocessable Entity` para garantir que nenhum dado seja gravado ou lido sem um proprietário definido.
+
+### Exemplo de Resposta (JSON Otimizado)
+```json
+{
+    "sucesso": true,
+    "mensagem": "Lista de clientes recuperada com sucesso!",
+    "dados": [
+        {
+            "id": 1,
+            "nome": "Sophia Loren",
+            "email": "sophia@luxo.com",
+            "perfil": "STANDARD",
+            "gastoTotalAcumulado": 0
+        }
+    ],
+    "tempoProcessamentoMs": 32
+}
 
 ---
 

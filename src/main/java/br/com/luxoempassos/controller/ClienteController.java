@@ -1,6 +1,7 @@
 package br.com.luxoempassos.controller;
 
 import br.com.luxoempassos.dto.ApiResponse;
+import br.com.luxoempassos.dto.ClienteDTO;
 import br.com.luxoempassos.exception.NegocioException;
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.service.IClienteService;
@@ -21,12 +22,15 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Cliente>>> listarTodos() {
+    public ResponseEntity<ApiResponse<List<ClienteDTO>>> listarTodos() {
         long inicio = System.currentTimeMillis();
 
-        List<Cliente> clientes = clienteService.listarTodos();
+        List<ClienteDTO> clientes = clienteService.listarTodos().stream()
+                .map(ClienteDTO::paraDTO)
+                .toList();
 
-        ApiResponse<List<Cliente>> resposta = ApiResponse.ok(
+        // Ajuste aqui: Mude de ApiResponse<List<Cliente>> para ApiResponse<List<ClienteDTO>>
+        ApiResponse<List<ClienteDTO>> resposta = ApiResponse.ok(
                 clientes,
                 "Lista de clientes recuperada com sucesso!",
                 inicio

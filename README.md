@@ -46,7 +46,7 @@ Para interagir com a API, é **obrigatório** o envio do identificador da loja n
     ],
     "tempoProcessamentoMs": 32
 }
-
+```
 ---
 
 ## 🧠 Regras de Negócio (Fidelidade)

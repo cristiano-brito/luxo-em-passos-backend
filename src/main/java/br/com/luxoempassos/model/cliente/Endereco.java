@@ -27,6 +27,11 @@ public record Endereco(
 
     public static Endereco criar(String logradouro, String numero, String bairro,
                                  String cidade, String cep, String uf) {
+
+        if (logradouro == null || logradouro.isBlank() || cep == null || uf == null) {
+            return null;
+        }
+
         return new Endereco(logradouro, numero, bairro, cidade, cep.replaceAll("\\D", ""), uf.toUpperCase().trim());
     }
 

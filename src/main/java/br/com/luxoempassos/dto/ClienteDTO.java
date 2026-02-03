@@ -2,13 +2,15 @@ package br.com.luxoempassos.dto;
 
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.model.cliente.Endereco;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
 public record ClienteDTO(
     Long id,
-    String nome,
-    String email,
+    @NotBlank String nome,
+    @Email String email,
     String telefone,
     String perfil,
     BigDecimal gastoTotalAcumulado,

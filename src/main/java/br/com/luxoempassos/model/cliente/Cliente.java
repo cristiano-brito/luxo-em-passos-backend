@@ -35,6 +35,7 @@ public class Cliente {
     @Embedded
     private Endereco endereco;
 
+    @NotBlank(message = "O telefone é obrigatório")
     private String telefone;
 
     @Email(message = "O e-mail informado é inválido")

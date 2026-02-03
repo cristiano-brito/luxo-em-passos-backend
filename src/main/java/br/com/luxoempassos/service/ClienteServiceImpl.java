@@ -1,6 +1,8 @@
 package br.com.luxoempassos.service;
 
+import br.com.luxoempassos.dto.ClienteDTO;
 import br.com.luxoempassos.model.cliente.Cliente;
+import br.com.luxoempassos.model.cliente.Endereco;
 import br.com.luxoempassos.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -21,13 +23,38 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     @Transactional
-    public Cliente salvar(Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public ClienteDTO salvar(ClienteDTO dto) {
+        Endereco endereco = null;
+        if (dto.endereco() != null) {
+            endereco = Endereco.criar(
+                    dto.endereco().logradouro(),
+                    dto.endereco().numero(),
+                    dto.endereco().bairro(),
+                    dto.endereco().cidade(),
+                    dto.endereco().cep(),
+                    dto.endereco().uf()
+            );
+        }
+
+        Cliente cliente = new Cliente(
+                dto.nome(),
+                endereco,
+                dto.telefone(),
+                dto.email(),
+                java.time.LocalDate.now()
+        );
+
+        Cliente salvo = clienteRepository.save(cliente);
+
+        return ClienteDTO.paraDTO(salvo);
     }
 
     @Override
-    public List<Cliente> listarTodos() {
-        return clienteRepository.findAll();
+    public List<ClienteDTO> listarTodos() {
+        return clienteRepository.findAll()
+                .stream()
+                .map(ClienteDTO::paraDTO)
+                .toList();
     }
 
     @Override

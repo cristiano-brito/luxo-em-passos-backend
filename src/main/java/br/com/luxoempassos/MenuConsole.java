@@ -1,5 +1,6 @@
 package br.com.luxoempassos;
 
+import br.com.luxoempassos.dto.ClienteDTO;
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.model.cliente.Endereco;
 import br.com.luxoempassos.model.produto.Sandalia;
@@ -115,15 +116,16 @@ public class MenuConsole {
 
     private void listarClientes() {
         System.out.println("\n--- CLIENTES NO BANCO ---");
-        List<Cliente> clientes = clienteService.listarTodos();
+        List<ClienteDTO> clientes = clienteService.listarTodos();
+
         if (clientes.isEmpty()) {
             System.out.println("Nenhum cliente cadastrado.");
         } else {
             clientes.forEach(c -> System.out.println(
-                    "ID: " + c.getId() +
-                            " | Nome: " + c.getNome() +
-                            " | Perfil: " + c.perfil().descricao() +
-                            " | Gasto Acumulado: " + MoedaUtil.formatar(c.getGastoTotalAcumulado())
+                    "ID: " + c.id() +
+                            " | Nome: " + c.nome() +
+                            " | Perfil: " + c.perfil() +
+                            " | Gasto Acumulado: " + MoedaUtil.formatar(c.gastoTotalAcumulado())
             ));
         }
     }
@@ -144,9 +146,14 @@ public class MenuConsole {
         System.out.print("Email: "); String email = scanner.nextLine();
 
         Endereco endereco = Endereco.criar("Rua das Palmeiras", "100", "Centro", "São Paulo", "01000-000", "BA");
-        Cliente novo = Cliente.novo(nome, endereco, "(11) 99999-9999", email, LocalDate.now());
 
-        clienteService.salvar(novo);
-        System.out.println("✅ Cliente " + nome + " cadastrado com ID: " + novo.getId());
+        // Simplificando: Crie o DTO com os dados que você tem em mãos.
+        // O id e os campos de cálculo podem ir vazios, pois o foco aqui é SALVAR.
+        ClienteDTO dto = new ClienteDTO(null, nome, email, "(11) 99999-9999", null, null, endereco);
+
+        // O service salva e te devolve o objeto pronto.
+        ClienteDTO salvo = clienteService.salvar(dto);
+
+        System.out.println("✅ Cliente " + salvo.nome() + " cadastrado!");
     }
 }

@@ -25,11 +25,8 @@ public class ClienteController {
     public ResponseEntity<ApiResponse<List<ClienteDTO>>> listarTodos() {
         long inicio = System.currentTimeMillis();
 
-        List<ClienteDTO> clientes = clienteService.listarTodos().stream()
-                .map(ClienteDTO::paraDTO)
-                .toList();
+        List<ClienteDTO> clientes = clienteService.listarTodos();
 
-        // Ajuste aqui: Mude de ApiResponse<List<Cliente>> para ApiResponse<List<ClienteDTO>>
         ApiResponse<List<ClienteDTO>> resposta = ApiResponse.ok(
                 clientes,
                 "Lista de clientes recuperada com sucesso!",
@@ -40,13 +37,17 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Cliente>> cadastrar(@Valid @RequestBody Cliente cliente) {
+    public ResponseEntity<ApiResponse<ClienteDTO>> cadastrar(@Valid @RequestBody ClienteDTO dto) {
         long inicio = System.currentTimeMillis();
 
-        Cliente salvo = clienteService.salvar(cliente);
+        ClienteDTO salvo = clienteService.salvar(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok(salvo, "Cliente cadastrado com sucesso!", inicio));
+                .body(ApiResponse.ok(
+                        salvo,
+                        "Cliente cadastrado com sucesso!",
+                        inicio
+                ));
     }
 
     @GetMapping("/{id}")

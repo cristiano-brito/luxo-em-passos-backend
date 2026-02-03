@@ -1,6 +1,7 @@
 package br.com.luxoempassos;
 
 import br.com.luxoempassos.config.TenantContext;
+import br.com.luxoempassos.dto.ClienteDTO;
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.model.cliente.Endereco;
 import br.com.luxoempassos.model.produto.Categoria;
@@ -34,8 +35,10 @@ public class LuxoEmPassosApplication {
                 if (clienteService.listarTodos().isEmpty()) {
                     System.out.println("🌱 Populando banco de dados inicial...");
 
-                    Endereco end = Endereco.criar("Av. Brasil", "10", "Centro", "Rio de Janeiro", "20000-000", "BA");
-                    clienteService.salvar(Cliente.novo("Sophia Loren", end, "21999998888", "sophia@luxo.com", LocalDate.now()));
+                    Endereco end = Endereco.criar("Av. Brasil", "10", "Centro", "Rio de Janeiro", "20000-000", "RJ");
+                    clienteService.salvar(ClienteDTO.paraDTO(
+                            Cliente.novo("Sophia Loren", end, "21999998888", "sophia@luxo.com", LocalDate.now())
+                    ));
 
                     produtoService.salvar(new Sandalia("SND-01", "Scarpin Luxo", 37, Categoria.SCARPIN, new BigDecimal("500.00"), 10));
                     produtoService.salvar(new Sandalia("SND-02", "Sandália Festa", 35, Categoria.SALTO_ALTO, new BigDecimal("350.00"), 5));

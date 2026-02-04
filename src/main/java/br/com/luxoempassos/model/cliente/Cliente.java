@@ -14,10 +14,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Table(name = "clientes")
-// Define o filtro "tenantFilter" que aceita um parâmetro "tenantId" do tipo String
+@Table(name = "clientes", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_cliente_cpf_tenant", columnNames = {"cpf", "tenant_id"}),
+        @UniqueConstraint(name = "uk_cliente_email_tenant", columnNames = {"email", "tenant_id"})
+})
 @FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = String.class))
-// Aplica o filtro: toda query SQL gerada terá "WHERE tenant_id = :tenantId"
 @Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 public class Cliente {
 
@@ -25,9 +26,12 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Novo campo para o Multi-tenancy
     @Column(name = "tenant_id", nullable = false, updatable = false)
     private String tenantId;
+
+    @NotBlank(message = "O CPF é obrigatório")
+    @Column(length = 11, nullable = false)
+    private String cpf;
 
     @NotBlank(message = "O nome é obrigatório para clientes de luxo")
     private String nome;
@@ -38,6 +42,7 @@ public class Cliente {
     @NotBlank(message = "O telefone é obrigatório")
     private String telefone;
 
+    @NotBlank(message = "O e-mail é obrigatório")
     @Email(message = "O e-mail informado é inválido")
     private String email;
 
@@ -51,16 +56,17 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(String nome, Endereco endereco, String telefone, String email, LocalDate dataCadastro) {
+    public Cliente(String nome, String cpf, Endereco endereco, String telefone, String email, LocalDate dataCadastro) {
         this.nome = nome;
+        this.cpf = cpf;
         this.endereco = endereco;
         this.telefone = telefone;
         this.email = email;
         this.dataCadastro = dataCadastro;
     }
 
-    public static Cliente novo(String nome, Endereco endereco, String telefone, String email, LocalDate dataCadastro) {
-        return new Cliente(nome, endereco, telefone, email, dataCadastro);
+    public static Cliente novo(String nome, String cpf, Endereco endereco, String telefone, String email, LocalDate dataCadastro) {
+        return new Cliente(nome, cpf, endereco, telefone, email, dataCadastro);
     }
 
     public PerfilFidelidade perfil() {
@@ -110,6 +116,7 @@ public class Cliente {
 
     public Long getId() { return id; }
     public String getNome() { return nome; }
+    public String getCpf() { return cpf; }
     public Endereco getEndereco() { return endereco; }
     public String getEmail() { return email; }
     public String getTelefone() { return telefone; }

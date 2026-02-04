@@ -44,4 +44,21 @@ public class GlobalExceptionHandler {
                 ApiResponse.erro("Erro de validação: " + mensagem, inicio)
         );
     }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex) {
+        long inicio = System.currentTimeMillis();
+        String mensagem = "Erro de integridade: Este registro (CPF ou E-mail) já existe no sistema.";
+
+        // Opcional: Refinar a mensagem verificando o nome da constraint
+        if (ex.getMessage() != null && ex.getMessage().contains("uk_cliente_cpf_tenant")) {
+            mensagem = "Este CPF já está cadastrado para esta boutique.";
+        } else if (ex.getMessage() != null && ex.getMessage().contains("uk_cliente_email_tenant")) {
+            mensagem = "Este e-mail já está cadastrado para esta boutique.";
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.erro(mensagem, inicio)
+        );
+    }
 }

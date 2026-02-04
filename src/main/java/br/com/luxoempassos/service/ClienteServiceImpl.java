@@ -1,6 +1,7 @@
 package br.com.luxoempassos.service;
 
 import br.com.luxoempassos.dto.ClienteDTO;
+import br.com.luxoempassos.exception.NegocioException;
 import br.com.luxoempassos.model.cliente.Cliente;
 import br.com.luxoempassos.model.cliente.Endereco;
 import br.com.luxoempassos.repository.ClienteRepository;
@@ -24,6 +25,17 @@ public class ClienteServiceImpl implements IClienteService {
     @Override
     @Transactional
     public ClienteDTO salvar(ClienteDTO dto) {
+        // 1. Validação de Negócio (Pré-checa antes de tentar inserir)
+        String currentTenant = br.com.luxoempassos.config.TenantContext.getTenantId();
+
+        if (clienteRepository.existsByCpfAndTenantId(dto.cpf(), currentTenant)) {
+            throw new NegocioException("Este CPF já está cadastrado.");
+        }
+
+        if (clienteRepository.existsByEmailAndTenantId(dto.email(), currentTenant)) {
+            throw new NegocioException("Este e-mail já está cadastrado.");
+        }
+
         Endereco endereco = null;
         if (dto.endereco() != null) {
             endereco = Endereco.criar(
@@ -38,6 +50,7 @@ public class ClienteServiceImpl implements IClienteService {
 
         Cliente cliente = new Cliente(
                 dto.nome(),
+                dto.cpf(),
                 endereco,
                 dto.telefone(),
                 dto.email(),

@@ -149,7 +149,7 @@ public class MenuConsole {
 
         // Simplificando: Crie o DTO com os dados que você tem em mãos.
         // O id e os campos de cálculo podem ir vazios, pois o foco aqui é SALVAR.
-        ClienteDTO dto = new ClienteDTO(null, nome, email, "(11) 99999-9999", null, null, endereco);
+        ClienteDTO dto = new ClienteDTO(null, nome, "15062656001", email, "(11) 99999-9999", null, null, LocalDate.parse("2026-02-04"), endereco);
 
         // O service salva e te devolve o objeto pronto.
         ClienteDTO salvo = clienteService.salvar(dto);

@@ -37,7 +37,7 @@ public class LuxoEmPassosApplication {
 
                     Endereco end = Endereco.criar("Av. Brasil", "10", "Centro", "Rio de Janeiro", "20000-000", "RJ");
                     clienteService.salvar(ClienteDTO.paraDTO(
-                            Cliente.novo("Sophia Loren", end, "21999998888", "sophia@luxo.com", LocalDate.now())
+                            Cliente.novo("Sophia Loren", "15062656001", end, "21999998888", "sophia@luxo.com", LocalDate.now())
                     ));
 
                     produtoService.salvar(new Sandalia("SND-01", "Scarpin Luxo", 37, Categoria.SCARPIN, new BigDecimal("500.00"), 10));

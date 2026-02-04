@@ -32,8 +32,10 @@ public class ClienteServiceImpl implements IClienteService {
             throw new NegocioException("Este CPF já está cadastrado.");
         }
 
-        if (clienteRepository.existsByEmailAndTenantId(dto.email(), currentTenant)) {
-            throw new NegocioException("Este e-mail já está cadastrado.");
+        if (dto.email() != null && !dto.email().isBlank()) {
+            if (clienteRepository.existsByEmailAndTenantId(dto.email(), currentTenant)) {
+                throw new NegocioException("Este e-mail já está sendo utilizado por outra cliente.");
+            }
         }
 
         Endereco endereco = null;

@@ -42,7 +42,6 @@ public class Cliente {
     @NotBlank(message = "O telefone é obrigatório")
     private String telefone;
 
-    @NotBlank(message = "O e-mail é obrigatório")
     @Email(message = "O e-mail informado é inválido")
     private String email;
 

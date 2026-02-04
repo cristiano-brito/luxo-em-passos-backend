@@ -12,7 +12,7 @@ O **Luxo em Passos** é um sistema de gestão SaaS robusto para boutiques de cal
 ## 🚀 Diferenciais do Projeto
 
 - **Arquitetura Multi-tenancy (SaaS):** Isolamento rigoroso de dados entre lojas utilizando **Hibernate Filters** e **AOP** (Programação Orientada a Aspectos). Cada requisição é blindada por um identificador de inquilino.
-- - **Integridade de Dados & Unicidade:** Implementação de constraints compostas (`CPF + Tenant` e `Email + Tenant`), garantindo que a mesma cliente não seja duplicada dentro de uma boutique, enquanto permite que diferentes lojistas possuam a mesma cliente em suas bases isoladas.
+- **Integridade de Dados & Unicidade:** Implementação de constraints compostas (`CPF + Tenant` e `Email + Tenant`). O **CPF** atua como âncora obrigatória de unicidade por boutique. O **E-mail**, agora tratado como campo opcional para reduzir o atrito no cadastro, mantém a validação de unicidade sempre que fornecido, impedindo conflitos de identidade dentro de um mesmo lojista.
 - **Alta Performance & Desacoplamento:** Uso extensivo de **Java Records (DTOs)** para reduzir o payload das respostas e evitar o problema de N+1 queries, garantindo tempos de resposta sub-50ms.
 - **Motor de Fidelidade Dinâmico:** O perfil do cliente (`Standard`, `Gold`, `Black`) evolui automaticamente com base no faturamento acumulado, calculado em tempo real pelo backend.
 - **Envelope Pattern:** Padronização global de respostas via `ApiResponse<T>`, facilitando o consumo pelo Frontend e garantindo metadados de auditoria e performance.

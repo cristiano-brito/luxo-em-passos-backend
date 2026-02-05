@@ -34,15 +34,17 @@ public class Cliente {
     private String cpf;
 
     @NotBlank(message = "O nome é obrigatório para clientes de luxo")
+    @Column(nullable = false)
     private String nome;
 
     @Embedded
     private Endereco endereco;
 
-    @NotBlank(message = "O telefone é obrigatório")
+    @Column(nullable = true)
     private String telefone;
 
     @Email(message = "O e-mail informado é inválido")
+    @Column(nullable = true)
     private String email;
 
     @Column(updatable = false)
@@ -59,8 +61,8 @@ public class Cliente {
         this.nome = nome;
         this.cpf = cpf;
         this.endereco = endereco;
-        this.telefone = telefone;
-        this.email = email;
+        this.telefone = (telefone != null && telefone.isBlank()) ? null : telefone;
+        this.email = (email != null && email.isBlank()) ? null : email;
         this.dataCadastro = dataCadastro;
     }
 

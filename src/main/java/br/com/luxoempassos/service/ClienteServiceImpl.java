@@ -28,12 +28,15 @@ public class ClienteServiceImpl implements IClienteService {
         // 1. Validação de Negócio (Pré-checa antes de tentar inserir)
         String currentTenant = br.com.luxoempassos.config.TenantContext.getTenantId();
 
+        String emailTratado = (dto.email() != null && dto.email().isBlank()) ? null : dto.email();
+        String telefoneTratado = (dto.telefone() != null && dto.telefone().isBlank()) ? null : dto.telefone();
+
         if (clienteRepository.existsByCpfAndTenantId(dto.cpf(), currentTenant)) {
             throw new NegocioException("Este CPF já está cadastrado.");
         }
 
-        if (dto.email() != null && !dto.email().isBlank()) {
-            if (clienteRepository.existsByEmailAndTenantId(dto.email(), currentTenant)) {
+        if (emailTratado != null) {
+            if (clienteRepository.existsByEmailAndTenantId(emailTratado, currentTenant)) {
                 throw new NegocioException("Este e-mail já está sendo utilizado por outra cliente.");
             }
         }
@@ -54,8 +57,8 @@ public class ClienteServiceImpl implements IClienteService {
                 dto.nome(),
                 dto.cpf(),
                 endereco,
-                dto.telefone(),
-                dto.email(),
+                telefoneTratado,
+                emailTratado,
                 java.time.LocalDate.now()
         );
 
